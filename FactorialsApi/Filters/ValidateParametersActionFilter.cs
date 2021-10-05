@@ -22,7 +22,7 @@ namespace FactorialsApi.Filters
             if (arguments.ContainsKey("value"))
             {
                 int value = Convert.ToInt32(param);
-                if (value > 20 || value <= 0)
+                if (value > 20 || value < 0)
                 {
                     context.Result = new BadRequestResult();
                     return;
@@ -32,7 +32,7 @@ namespace FactorialsApi.Filters
             if (arguments.ContainsKey("result"))
             {
                 long result = Convert.ToInt64(param);
-                if (result > 2432902008176640000 || result <= 0)
+                if (result > 2432902008176640000 || result < 0)
                 {
                     context.Result = new BadRequestResult();
                     return;
