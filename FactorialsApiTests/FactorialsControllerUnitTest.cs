@@ -6,7 +6,19 @@ namespace FactorialsApiTests
     public class FactorialsControllerUnitTest
     {
         [Fact]
-        public void TestMethod()
+        public void GetResultByValueTestMethod()
+        {
+
+        }
+
+        [Fact]
+        public void GetNearestValueByValueTestMethod()
+        {
+
+        }
+
+        [Fact]
+        public void GetNearestValueByResultTestMethod()
         {
 
         }
