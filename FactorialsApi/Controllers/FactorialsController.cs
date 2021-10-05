@@ -12,18 +12,18 @@ namespace FactorialsApi.Controllers
     [ApiController]
     public class FactorialsController : ControllerBase
     {
-        private readonly FactorialsContext _context;
+        private readonly IRepository _repository;
 
-        public FactorialsController(FactorialsContext context)
+        public FactorialsController(IRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [HttpGet("factorials/{value}")]
         [ServiceFilter(typeof(ValidateParametersActionFilter))]
         public async Task<IActionResult> GetResultByValue(int? value)
         {
-            var factorial = await _context.Factorials.FirstOrDefaultAsync(f => f.Value == value);
+            var factorial = await _repository.GetByValue(value);
 
             if (factorial == null)
             {
@@ -33,12 +33,12 @@ namespace FactorialsApi.Controllers
                     result *= i;
                 }
 
-                await _context.Factorials.AddAsync(new Factorial
+                await _repository.Create(new Factorial
                 {
                     Value = value,
                     Result = result
                 });
-                await _context.SaveChangesAsync();
+                await _repository.Save();
 
                 return Ok(result);
             }
@@ -50,7 +50,7 @@ namespace FactorialsApi.Controllers
         [ServiceFilter(typeof(ValidateParametersActionFilter))]
         public async Task<IActionResult> GetNearestValueByValue(int? value)
         {
-            var factorials = await _context.Factorials.ToListAsync();
+            var factorials = await _repository.GetAll();
 
             int? left = 0;
             int? right = 20;
@@ -62,8 +62,8 @@ namespace FactorialsApi.Controllers
                     right = item.Value;
             }
 
-            var leftFact = await _context.Factorials.FirstOrDefaultAsync(f => f.Value == left);
-            var rightFact = await _context.Factorials.FirstOrDefaultAsync(f => f.Value == right);
+            var leftFact = await _repository.GetByValue(left);
+            var rightFact = await _repository.GetByValue(right);
 
             var leftResult = leftFact?.Value == null ? "null" : leftFact?.Value.ToString();
             var rightResult = rightFact?.Value == null ? "null" : rightFact?.Value.ToString();
@@ -75,7 +75,7 @@ namespace FactorialsApi.Controllers
         [ServiceFilter(typeof(ValidateParametersActionFilter))]
         public async Task<IActionResult> GetNearestValueByResult(long? result)
         {
-            var factorials = await _context.Factorials.ToListAsync();
+            var factorials = await _repository.GetAll();
 
             long? left = 0;
             long? right = 2432902008176640000;
@@ -87,8 +87,8 @@ namespace FactorialsApi.Controllers
                     right = item.Result;
             }
 
-            var leftFact = await _context.Factorials.FirstOrDefaultAsync(f => f.Result == left);
-            var rightFact = await _context.Factorials.FirstOrDefaultAsync(f => f.Result == right);
+            var leftFact = await _repository.GetByResult(left);
+            var rightFact = await _repository.GetByResult(right);
 
             var leftResult = leftFact?.Value == null ? "null" : leftFact?.Value.ToString();
             var rightResult = rightFact?.Value == null ? "null" : rightFact?.Value.ToString();

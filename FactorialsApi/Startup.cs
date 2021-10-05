@@ -30,6 +30,7 @@ namespace FactorialsApi
             services.AddControllers();
             services.AddDbContext<FactorialsContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("FactorialsContext")));
+            services.AddScoped<IRepository, Repository>();
             services.AddScoped<ValidateParametersActionFilter>();
         }
 
